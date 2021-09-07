@@ -43,6 +43,7 @@
   </div>
 
   <script>
+    // debounce : 자주 사용 되는 이벤트나 함수들의 실행빈도를 줄여 성능을 올림, 20ms 에 한 번씩 가장 최신 이벤트 발생
     function debounce(func, wait = 20, immediate = true) {
       var timeout;
       return function() {
@@ -57,6 +58,36 @@
         if (callNow) func.apply(context, args);
       };
     }
+
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    function checkSlide(e) {
+      // console.count(e);
+      // console.log(window.scrollY);
+      // point that images are peaking out about 50%
+
+      sliderImages.forEach(sliderImage => {
+        // half way through the image(pixel level of when each of the images should be slid in at) = 
+        // (calculate bottom of pixel level of the viewport) - sliderImage's half height 
+        const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2;
+        console.log(slideInAt);
+
+        // bottom of the image / offsetTop : 최상단에서 이미지까지의 높이
+        const imageBottom = sliderImage.offsetTop + sliderImage.height;
+
+        // checking valuables
+        const isHalfShown = slideInAt > sliderImage.offsetTop;
+        const isNotScrolledPast = window.scrollY < imageBottom;
+
+        if (isHalfShown && isNotScrolledPast) {
+          sliderImage.classList.add('active');
+        } else {
+          sliderImage.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', debounce(checkSlide));
 
   </script>
 
