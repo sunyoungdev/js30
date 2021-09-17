@@ -18,6 +18,7 @@
     <p></p>
     <ul class="plates">
       <li>Loading Tapas...</li>
+      
     </ul>
     <form class="add-items">
       <input type="text" name="item" placeholder="Item Name" required>
@@ -28,7 +29,55 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  const items = JSON.parse(localStorage.getItem('items')) || []; // 있으면 가져오고 아니면 fall back to an empty array 
+
+  function addItem(e) {
+    e.preventDefault(); // stop page reloading(form's default event:send data to external page)
+    const text = (this.querySelector('[name=item]')).value;
+    const item = {
+      text, // text: text
+      done: false
+    };
+    
+    items.push(item);
+    populateList(items, itemsList);
+    localStorage.setItem('items', JSON.stringify(items));
+
+    this.reset();
+    console.table(items);
+  }
+
+  // populate html
+  function populateList(plates = [], platesList) {  // plates = [] => default empty array 를 설정해서 만일 빈 값이 넘어오더라도 루프가 멈추지 않도록 함
+    platesList.innerHTML = plates.map((plate, i) => {
+      return `
+        <li>
+          <input type="checkbox" data-index="${i}" id="item${i}" ${plate.done ? 'checked' : ''} />
+          <label for="item${i}">${plate.text}</label>
+        </li>
+      `;
+    }).join('');
+  }
+
+  function toggleDone(e) {
+    // 공통 조상에 할당한 핸들러에서 event.target을 이용하면 실제 어디서 이벤트가 발생했는지 알 수 있습니다. 이를 이용해 이벤트를 핸들링합니다.
+    if (!e.target.matches('input')) return;
+
+    const el = e.target;
+    const index = el.dataset.index;
+
+    items[index].done = !items[index].done
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener('submit', addItem);
+  itemsList.addEventListener('click', toggleDone);  // 이벤트 위임(event delegation) : 요소의 공통 조상에 이벤트 핸들러를 단 하나만 할당해도 여러 요소를 한꺼번에 다룰 수 있습니다
+
+  populateList(items, itemsList);
+
+
+// TODO: make clear all, check all, uncheck all buttons
 
 </script>
 
