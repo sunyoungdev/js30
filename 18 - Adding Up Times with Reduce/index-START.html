@@ -182,6 +182,34 @@
     </li>
   </ul>
 <script>
+
+  // const timeNodes = document.querySelectorAll('[data-time]');
+
+  // NodeList doesn't have map function so convert it to an array
+  // const timeNodes = [...document.querySelectorAll('[data-time]')];
+  const timeNodes = Array.from(document.querySelectorAll('[data-time]'));
+  
+  // console.log(timeNodes); 
+  const seconds = timeNodes
+    .map(node => node.dataset.time) // mapped to a string array 
+    .map(timeCode => {
+      const [mins, secs] = timeCode.split(':').map(parseFloat); // array destructuring 구조분해할당으로 변수로 데이터 사용 가능
+      // parseFloat 문자열을 실수로 변경
+      return (mins * 60) + secs; // 초로 변경
+      console.log(mins, secs);
+    })
+    .reduce((total, vidSeconds) => total + vidSeconds); // 모든 초를 누산
+
+    let secondsLeft = seconds;
+    const hours = Math.floor(secondsLeft / 3600);
+    secondsLeft = secondsLeft % 3600; // % => 나누고 난 나머지를 구하는 연산자
+
+    const mins = Math.floor(secondsLeft / 60);
+    secondsLeft = secondsLeft % 60;
+    console.log(hours, mins, secondsLeft);
+
+
+
 </script>
 </body>
 </html>
