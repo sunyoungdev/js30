@@ -40,9 +40,34 @@
   }
 </style>
 
-<button></button>
+<button>checkout</button>
 <script>
+  const divs = document.querySelectorAll('div');
+  const button = document.querySelector('button');
 
+  function logText(e) {
+    console.log(this.classList.value);
+    e.stopPropagation();  // stop bubbling/capturing this event 
+    // console.log(this);
+  }
+
+  // document.body.addEventListener('click', logText);
+  divs.forEach(div => div.addEventListener('click', logText, {
+    capture: false
+  }));
+
+  button.addEventListener('click', () => {
+    console.log('click!!!')
+  }, {once: true});
+
+  /*
+    - addEventListener
+    1) capture (down) : goes from top down / capture where the event happened
+    capture: true => capture down 순서로 이벤트를 발생시킴
+    capture: false => default, bubble up 순서로 이벤트 발생
+    2) bubble (up) : when the elements are nested, trigger the events all the way up
+    3) once : true => unbind itself after event happened once
+  */
 </script>
 </body>
 </html>
