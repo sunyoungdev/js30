@@ -35,6 +35,40 @@
   </div>
 
 <script>
+  const slider = document.querySelector('.items');
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.classList.add('active');
+    // console.log(e.pageX);  // pageX => 페이지 내에 이벤트가 발생한 위치의 x 값
+    startX = e.pageX - slider.offsetLeft;  // offsetLeft => 부모요소 기준의 offset 값
+    scrollLeft = slider.scrollLeft; // scrollLeft => 요소의 스크롤 위치 left 값
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    slider.classList.remove('active');
+  });
+
+  slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.classList.remove('active');
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;  // stop the fn from running
+    // console.count(isDown);
+    e.preventDefault(); // stop any other events
+
+    const x = e.pageX - slider.offsetLeft;  
+    // console.log({x, startX});
+    const walk = (x - startX) * 3;  // how far have we deviated from the initial startX
+    slider.scrollLeft = scrollLeft - walk;  // slider 의 scroll left 값을 initial에서 walk 만치 계산
+    // console.log(slider.scrollLeft, scrollLeft)
+  });
 </script>
 
   </body>
